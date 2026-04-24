@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: tasksdb
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    container_name: fastapi-backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://admin:admin@db:5432/tasksdb
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-ui
+    depends_on:
+      - backend
+    ports:
+      - "5500:80"
