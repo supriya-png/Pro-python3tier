@@ -47,7 +47,19 @@ pipeline {
                 }
             }
         }
-    }
+
+	stage('Deploy to Kubernetes') {
+            steps {
+        	sh '''
+        	  kubectl rollout restart deployment backend
+        	  kubectl rollout restart deployment frontend
+
+        	  kubectl rollout status deployment backend
+        	  kubectl rollout status deployment frontend
+                   '''
+    		}
+        }		
+   }
 
     post {
         success {
