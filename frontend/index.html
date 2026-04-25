@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tasks App v2</title>
+  <title>Tasks App v3</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <div class="container">
-  <h1>My Tasks (v2)</h1>
+  <h1>My Tasks (v3)</h1>
 
   <input type="text" id="taskInput" placeholder="Enter task">
+
   <button onclick="addTask()">Add</button>
   <button onclick="updateTask()">Update</button>
+  <button onclick="showTasks()">Show My Tasks</button>
 
   <ul id="taskList"></ul>
+
+  <div id="tasksTable"></div>
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>

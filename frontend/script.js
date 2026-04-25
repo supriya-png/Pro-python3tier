@@ -10,12 +10,11 @@ async function loadTasks() {
 
     data.forEach(task => {
         list.innerHTML += `
-          <li>
-            ${task.title}
-            <button onclick="editTask(${task.id}, '${task.title}')">Edit</button>
-            <button onclick="deleteTask(${task.id})">Delete</button>
-          </li>
-        `;
+        <li>
+          ${task.title}
+          <button onclick="editTask(${task.id}, '${task.title}')">Edit</button>
+          <button onclick="deleteTask(${task.id})">Delete</button>
+        </li>`;
     });
 }
 
@@ -46,9 +45,9 @@ async function updateTask() {
         body: JSON.stringify({title})
     });
 
-    editId = null;
     document.getElementById("taskInput").value = "";
     loadTasks();
+    showTasks();
 }
 
 async function deleteTask(id) {
@@ -57,6 +56,36 @@ async function deleteTask(id) {
     });
 
     loadTasks();
+    showTasks();
+}
+
+async function showTasks() {
+    const res = await fetch(`${API}/tasks`);
+    const data = await res.json();
+
+    let html = `
+      <h2>My Tasks</h2>
+      <table border="1" width="100%">
+      <tr>
+        <th>ID</th>
+        <th>Task</th>
+        <th>Updated Date</th>
+      </tr>
+    `;
+
+    data.forEach(task => {
+        html += `
+          <tr>
+            <td>${task.id}</td>
+            <td>${task.title}</td>
+            <td>${new Date().toLocaleDateString()}</td>
+          </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById("tasksTable").innerHTML = html;
 }
 
 loadTasks();

@@ -10,23 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Login Docker Hub
+      - name: Set Version
+        run: echo "VERSION=v${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Backend
+      # BACKEND
+      - name: Build Backend Latest
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/python3tier-backend:latest ./backend
 
-      - name: Push Backend
+      - name: Tag Backend Version
+        run: docker tag ${{ secrets.DOCKER_USERNAME }}/python3tier-backend:latest ${{ secrets.DOCKER_USERNAME }}/python3tier-backend:${{ env.VERSION }}
+
+      - name: Push Backend Latest
         run: docker push ${{ secrets.DOCKER_USERNAME }}/python3tier-backend:latest
 
-      - name: Build Frontend
+      - name: Push Backend Version
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/python3tier-backend:${{ env.VERSION }}
+
+      # FRONTEND
+      - name: Build Frontend Latest
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/python3tier-frontend:latest ./frontend
 
-      - name: Push Frontend
+      - name: Tag Frontend Version
+        run: docker tag ${{ secrets.DOCKER_USERNAME }}/python3tier-frontend:latest ${{ secrets.DOCKER_USERNAME }}/python3tier-frontend:${{ env.VERSION }}
+
+      - name: Push Frontend Latest
         run: docker push ${{ secrets.DOCKER_USERNAME }}/python3tier-frontend:latest
+
+      - name: Push Frontend Version
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/python3tier-frontend:${{ env.VERSION }}
